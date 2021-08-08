@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/index.js"></script>
+        <style type="text/css">
+      
+            .form-contener{
+              width:70%; 
+              min-height:85vh; 
+              margin: auto auto auto auto;
+              padding: 2% 5% 10% 5%;
+              border-radius: 1vh;
+              border: 1px solid #7B7B7B;
+              background-color:#E0E0E0;
+            }
+            .card-title{
+                color:#272727;
+                font-size: 4.5vh;
+                text-align: center;
+                font-weight: bold;
+                font-family: "Times New Roman";
+                padding-top: 1vh;
+            }
+            .labelo{
+                color:#5B5B5B;
+                font-size: 2.5vh;
+                text-align: center;
+            }
+            #error_entry{
+              color: red;
+              font-style: italic;
+            }
+            #spa{
+              color: #003D79;
+              font-weight: bold;
+              font-family: "Times New Roman";
+            }
+            label {
+            margin : 10px;
+            }
+            .valid{
+            width: 30%;
+            margin-left: 35%;
+              margin-right: 35%;
+            }
+            .div_search{
+            }
+            .btn_build{
+                padding-top: 2px; 
+                padding-bottom: 2px; 
+                padding-left: 4px; 
+                padding-right: 4px; 
+                
+            }
+          </style>
+    </head>
+    <body>
+        <header>
+            <!-- Entete -->
+            <nav class="navbar navbar-dark bg-primary">
+               <a class="navbar-brand" href="#">
+                 <img src="images/icone_globe.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+                <strong>Togo Campus Virtuel</strong>
+               </a>
+             </nav>
+
+        </header>
+       
+       
+        <div class="container">
+                       <!-- content -->
+            <h3> Gestionnaire d'ajouts et de modiffications</h3>
+            <form class="needs-validation" novalidate action="controller/control_student_registration.php" method="post">
+       
+                 <!--Partie 1-->
+                <fieldset>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_institution">Institutions</label>
+                            <select id="id_institution" class="form-control" name="institution" onchange="resetChild(0)" required>
+                                <option selected value="0">Choose</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3"><br>
+                            <label ></label>
+                            <div class="div_search">
+                                <button type="button"  class="btn btn-primary btn_build all_button" id="btn_institution" onclick="sendRequest(0, 'id_institution', 'ins_loading', 'btn_institution', 'institution')">Load</button>
+                                <div id="ins_loading" role="status"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="id_new_institution">Ajouter une nouvelle institution</label>
+                          <input type="mail" class="form-control" id="id_new_institution" name="mail" placeholder="Entrer nouvelle institution" required>
+                        </div>
+                     </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_structure">Structures</label>
+                            <select id="id_structure" class="form-control" name="structure" onchange="resetChild(1)" required>
+                                <option selected value="0">Choose</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3"><br>
+                            <label ></label>
+                            <div class="div_search" >
+                                <button type="button"  class="btn btn-primary btn_build all_button" id="btn_structure"  onclick="sendRequest(1, 'id_structure', 'str_loading', 'btn_structure', 'structure')">Load</button>
+                                <div id="str_loading" role="status"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="exampleInputEmail1">Ajouter une nouvelle structure</label>
+                          <input type="mail" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="mail" placeholder="Entrer votre email" required>
+                        </div>
+                     </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_departement">Departement</label>
+                            <select id="id_departement" class="form-control" name="departement" onchange="resetChild(2)" required>
+                                <option selected value="0">Choose</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3"><br>
+                            <label ></label>
+                            <div class="div_search" >
+                                <button type="button"  class="btn btn-primary btn_build all_button" id="btn_departement" onclick="sendRequest(2, 'id_departement', 'dep_loading', 'btn_departement', 'departement')">Load</button>
+                                <div id="dep_loading" role="status"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="exampleInputEmail13">Ajouter un nouveau département</label>
+                          <input type="mail" class="form-control" id="exampleInputEmail13" aria-describedby="emailHelp" name="mail" placeholder="Entrer votre email" required>
+                        </div>
+                     </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_semestre">Semestre</label>
+                            <select id="id_semestre" class="form-control" name="semestre" onchange="resetChild(3)" required>
+                                <option selected value="0">Choose</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3"><br>
+                            <label ></label>
+                            <div class="div_search" >
+                                <button type="button"  class="btn btn-primary btn_build all_button" id="btn_semestre" onclick="sendRequest(3, 'id_semestre', 'sem_loading', 'btn_semestre', 'semestre')">Load</button>
+                                <div id="sem_loading" role="status"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_new_semestre">Choisir nouveau semestre</label>
+                            <select id="id_new_semestre" class="form-control" name="new_semestre" required>
+                                <option selected value="0"> Choisir</option>
+                            </select>
+                        </div>
+                     </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_matiere">Matiere</label>
+                            <select id="id_matiere" class="form-control" name="matiere" onchange="resetChild(4)" required>
+                                <option selected value="0">Choose</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3"><br>
+                            <label ></label>
+                            <div class="div_search" >
+                                <button type="button"  class="btn btn-primary btn_build all_button" id="btn_matiere" onclick="sendRequest(4, 'id_matiere', 'mat_loading', 'btn_matiere', 'matiere')">Load</button>
+                                <div id="mat_loading" role="status"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="exampleInputEmail1345">Ajouter une nouvelle matière</label>
+                          <input type="mail" class="form-control" id="exampleInputEmail1345" aria-describedby="emailHelp" name="mail" placeholder="Entrer une matiere" required>
+                        </div>
+                     </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_section">Section</label>
+                            <select id="id_section" class="form-control" name="section" onchange="resetChild(5)" required>
+                                <option selected value="0">Choose</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3"><br>
+                            <label ></label>
+                            <div class="div_search" >
+                                <button type="button"  class="btn btn-primary btn_build all_button" id="btn_section" onclick="sendRequest(5, 'id_section', 'sec_loading', 'btn_section', 'section')">Load</button>
+                                <div id="sec_loading" role="status"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_new_section">Choisir nouvelle section</label>
+                            <select id="id_new_section" class="form-control" name="new_section" required>
+                                <option selected value="0"> Choisir</option>
+                            </select>
+                        </div>
+                     </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_annee">Année</label>
+                            <select id="id_annee" class="form-control" name="annee" onchange="resetChild(6)" required>
+                                <option selected value="0">Choose</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3"><br>
+                            <label ></label>
+                            <div class="div_search" >
+                                <button type="button"  class="btn btn-primary btn_build all_button" id="btn_annee" onclick="sendRequest(6, 'id_annee', 'ann_loading', 'btn_annee', 'epreuve')">Load</button>
+                                <div id="ann_loading" role="status"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_new_annee">Choisir nouvelle année</label>
+                            <select id="id_new_annee" class="form-control" name="new_annee" required>
+                                <option selected value="0"> Choisir</option>
+                            </select>
+                        </div>
+                     </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                         <label for="exampleInputPassword1">Mot de passe : </label>
+                         <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="exampleInputPassword12">Confirmer le mot de passe:</label>
+                          <input type="password" class="form-control" id="exampleInputPassword12" name="conf_pass" placeholder="Password">
+                        </div>
+                    </div>
+                </fieldset>
+       
+                    <!--Partie 3-->
+                    <fieldset>
+       
+                    <div class="form-row">
+                       <div class="col-md-4 mb-3">
+                            <label for="inputState1">Faculté : </label>
+                            <select id="inputState1" class="form-control" name="faculty" required>
+                                <option selected value="0"> Choisir</option>
+                                <option value="FDS">Faculté des Sciences (FDS)</option>
+                                <option value="FDD">Faculté de Droit (FDD)</option>
+                                <option value="FLLA">Faculté des Lettres, Langues et Arts (FLLA)</option>
+                                <option value="FASEG">Faculté des Sciences Économiques et de Gestion (FASEG)</option>
+                                <option value="FSHS">Faculté des Sciences de l'Homme et de la Société (FSHS)</option>
+                                <option value="FSS">Faculté des Sciences de la Santé (FSS)</option>
+                            </select>
+       
+                         </div>
+       
+                         <div class="col-md-4 mb-3">
+                           <label for="inputState2">Département de : </label>
+                             <select id="inputState2" class="form-control" name="departement" required>
+                               <option selected value="0"> Choisir</option>
+       
+                                 <option>Biochimie</option>
+                                 <option>Botanique</option>
+                                 <option>Chimie</option>
+                                 <option>Géologie</option>
+                                 <option>Mathématiques</option>
+                                 <option>Physiologie Animale</option>
+                                 <option>Physique</option>
+                                 <option>Zoologie et de Biologie Animale</option> 
+       
+                           </select>
+                         </div>
+                       </div>
+       
+                     </fieldset>
+       
+                         <!--Partie 3-->
+       
+                         <fieldset>
+                          <div class="form-row">
+                             <div class="col-md-4 mb-3">
+                                 <label class="sr-only3" for="inlineFormInput3">Numéro de téléphone : </label>
+                                 <input type="number" class="form-control mb-2" id="inlineFormInput3" placeholder="XX XX XX XX" name="telephone" required>
+                                 <small id="emailHelp" class="form-text text-muted">Ce numéro sera utiliser pour vous envoyer vos gain en argent selon vos points cumilés dans cette application</small>
+                             </div>
+       
+       
+                              <div class="col-md-4 mb-3">
+                                   <label class="sr-only4" for="inlineFormInput4">Numéro matricule :</label>
+                                   <input type="number" class="form-control mb-2" id="inlineFormInput4" placeholder="XXX XXX" name="matricule" required>
+                             </div>
+                         </div>
+       
+                       </fieldset>
+                     <br>
+       
+                       <button type="submit" class="btn btn-primary btn-lg valid all_button">Connexion</button>
+       
+                     <br>
+       
+                </form>
+       
+       
+       
+       </div>
+       
+       <!-- jQuery first, then Popper.js, then Bootstrap JS 
+        
+       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+       <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+        let parents = ["id_institution", "id_structure", "id_departement", "id_semestre", "id_matiere", "id_section", "id_annee"]
+        function sendRequest(numb_parent, id_recipient, id_loading, id_btn, table){
+            let bool = true;
+            let ids_parents = []
+            let recipient = document.getElementById(id_recipient);
+            let spin = document.getElementById(id_loading);
+            let btn = document.getElementById(id_btn);
+
+            resetChild(numb_parent);
+
+            for(let i=0; i<numb_parent; i++){
+                par = document.getElementById(parents[i]);
+                if(par.value == 0){
+                    bool = false;
+                    break;
+                }
+                ids_parents.push(par.value);
+            }
+            if(bool){
+                let url = '/request';
+                console.log(ids_parents)
+                console.log(table)
+                let data = {
+                    parents:  ids_parents,  //sendRequest(id_institution', 'ins_loading', 'btn_institution', 'institution')
+                    table: table,  //sendRequest('id_structure', 'str_loading', 'btn_structure', 'structure')
+                };               
+                waitResponse(data, url, btn, spin, recipient); 
+            }
+            
+        }
+        function setResponse(response, recipient){    
+            console.log(response)        
+            eraseSelector(recipient);
+            let selects = "<option value='0'>Choose</option>";
+            if (response && response.length){
+                for(let i=0; i<response.length; i++){
+                selects += "<option value='"+response[i].id+"'>"+response[i].full_name+"</option>";
+                }
+            }
+            recipient.innerHTML = selects;
+        }
+
+        function waitResponse(data, url, btn, spin, recipient){
+            enableLoading(btn, spin);
+            queryData(url, data).then(response => {
+                disableLoading(btn, spin);
+                setResponse(response, recipient)               
+            });
+        }
+        function eraseSelector(element){
+            while (element.firstChild) {
+                element.removeChild(element.firstChild);
+            }
+        }
+        function resetChild(numb_parent){
+            for(let i=numb_parent+1; i< parents.length; i++){
+                child = document.getElementById(parents[i]);
+                eraseSelector(child);
+                child.innerHTML = "<option value='0'>Choose</option>";
+            }
+        }
+        async function queryData(url = '', data = {}) {
+            const options = {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data) 
+            }
+            const response = await fetch(url, options);
+            return response.json(); 
+        }
+
+        function enableLoading(btn, spin){
+            document.querySelectorAll('.all_button').forEach(elem => {
+                elem.disabled = true;
+            });
+            btn.innerHTML = "Loading...";
+            spin.style.visibility = "visible";
+            spin.classList.add("spinner-border");
+            spin.classList.add("text-primary");
+        }
+        function disableLoading(btn, spin){
+            spin.classList.remove("spinner-border");
+            spin.classList.remove("text-primary");
+            spin.style.visibility = "hidden";
+            btn.innerHTML = "Load";
+            document.querySelectorAll('.all_button').forEach(elem => {
+            elem.disabled = false;
+            });
+        }
+    </script>
+    <script>
+    
+    </script>
+    </body> 
+    
+</html>
+

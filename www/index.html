@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <script type="module" src="./node_modules/@ionic/core/dist/ionic/ionic.esm.js"></script>
+        <script nomodule src="./node_modules/@ionic/core/dist/ionic/ionic.js"></script> 
+        <link rel="stylesheet" href="./node_modules/@ionic/core/css/ionic.bundle.css"/>
+        <script src="./node_modules/jszip/dist/jszip.min.js"></script>
+        <script src="./node_modules/epubjs/dist/epub.min.js"></script>
+        
+        <script src=""></script>
+        <link rel="stylesheet" href="css/index.css">
+        <title>Hello World</title>
+    </head>
+    <style>
+      html, body, .panel{
+        margin:0;
+        height: 100%;
+        overflow: hidden;
+      }
+      .big_container{
+        background-color: red;
+      }
+      #doc_container{
+        width: 100%;
+        height: 90%;
+        overflow: scroll;
+      }
+      #institution_content{
+        display: none;
+      }
+      .inst_logo{
+        width: 95%;
+        height: 110px;
+      }
+    </style>
+    <body>
+      <ion-content id='home_content' class="panel">
+        <ion-header>
+          <ion-toolbar color="primary">
+            <ion-title>Johnson</ion-title>
+            <ion-buttons slot="start">
+              <ion-back-button default-href="home" text="Back"></ion-back-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content [fullscreen]="true" class="big_container">
+          <section>
+            <ion-button size="small" color="secondary" id='open_doc'>open doc</ion-button>
+            <ion-button size="small" color="tertiary" id='send_data'>request remote</ion-button>
+            <ion-button size="small" color="tertiary" id='request_data'>request sqlite</ion-button>
+            <form>
+              <input name="pseudo" id="pseudo"></input>
+            </form>
+            <ion-button size="small" color="tertiary" id='butt_inst'>institution</ion-button>
+          </section>
+          <div id="local_data_container">
+          </div>
+          <div id="remote_data_container">
+          </div>
+          <div id="doc_container">
+            <img src="img/ul_logo.png">
+          </div>
+        </ion-content>
+      </ion-content>   
+      
+      <ion-content id='institution_content' class="panel">
+        <ion-header>
+          <ion-toolbar color="primary">
+            <ion-title>Institution</ion-title>
+            <ion-buttons slot="start">
+              <ion-back-button id="back_inst" default-href="home" text="Back"></ion-back-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content [fullscreen]="true" class="big_container">
+          <div id="institution_grid">
+          </div>
+        </ion-content>
+      </ion-content>   
+      
+
+
+      <script>
+        
+        document.getElementById("open_doc").addEventListener('click', ()=>{
+          const bookOptions = {requestHeaders: { "Accept": "text/xml" } };
+          var Book = ePub('documents/math.epub');
+            Book.renderTo('doc_container', {
+            flow: "scrolled-doc", // For generic books
+            method: "continuous", // For generic books
+            width: "100%",
+            heigh: "90%"
+          });//div id
+            Book.rendition.display()
+        
+        });
+        
+        
+      </script>
+          
+          <script src="cordova.js"></script>
+          <script type="module" src="views/index.js"></script>
+
+    </body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 2rem;
+        padding: 5rem;
+        }
+
+        ul {
+        list-style-type: none;
+        }
+
+        .todos {
+        cursor: pointer;
+        }
+
+        .todo::before {
+        content: "\2610";
+        display: inline-block;
+        margin-right: 0.5rem;
+        }
+
+        .todo.active {
+        color: #888;
+        }
+
+        .todo.active::before {
+        content: "\2611";
+        }
+
+        /* toggler */
+        .toggler::before {
+        content: "\25B6";
+        display: inline-block;
+        margin-right: 0.5rem;
+        transition: transform 0.3s ease-in-out;
+        }
+
+        .toggler.active::before {
+        transform: rotate(90deg);
+        }
+
+        .toggler-target {
+        display: none;
+        }
+
+        .toggler-target.active {
+        display: block;
+        }
+        .div_color{
+            cursor: pointer;
+            border: 0.2px solid #626666;
+            background: linear-gradient(to bottom,silver, lightgray);
+            display: flex;
+            margin: auto auto auto auto;
+        }
+        .div_color:hover{
+            background: linear-gradient(to bottom,lightgray, silver);;
+        }
+        .element_id{
+            flex: 5%;
+            display: none; 
+        }
+        .element_name{
+            flex: 80%;
+        }
+        .element_spinner{
+            flex: 3%;
+            border: 0.5px solid #626666;
+        }
+        .element_edit{
+            flex: 3%;
+            border: 0.5px solid #626666;
+        }
+    </style>
+    <title>Document</title>
+  </head>
+  <body>
+    
+    <div id="content_rows"></div>
+    <script>
+        function getData(level){
+            let data = null;
+            switch (level){
+                case 0:
+                    data = [{id: 1,name: "Université de Lomé"},{id: 2, name: "Université de Kara"}];
+                    break;
+                case 1:
+                    data = [{id: 3,name: "Faculté des Sciences"},{id: 4, name: "Ecole Superieur d'Agronomie"}];
+                    break;
+                case 2:
+                    data = [{id: 5,name: "Mathématiques"},{id: 6, name: "Chimie"}]
+                    break;
+            
+            }
+            return data;
+        }
+        function createTree(elementTable, parents, elementClick, tableList, level, maxLevel){
+            if(level <= maxLevel){
+                let data = getData(level);
+                let listUl = document.createElement('ul');
+                
+                if(level != 0) listUl.classList.add("toggler-target");
+                
+                for(let i = 0; i<data.length; i++){
+                    let subElement = document.createElement('li');
+                    let contentDiv = document.createElement('div');
+                    contentDiv.classList.add("toggler", "div_color");
+                    let elementId = document.createElement('div');
+                    let elementName = document.createElement('div');
+                    let elementEdit = document.createElement('div');
+                    let elementSpinner = document.createElement('div');
+                    elementId.classList.add("element_id");
+                    elementName.classList.add("element_name");
+                    elementEdit.classList.add("element_edit");
+                    elementSpinner.classList.add("element_spinner");
+                    elementName.innerHTML = data[i].name;
+                    
+                    contentDiv.append(elementId, elementName, elementEdit, elementSpinner);
+                    
+                    subElement.appendChild(contentDiv);
+                    
+                        let childParents = parents;
+                        if(level == 0){
+                            childParents = [data[i].id]
+                        }else{
+                            childParents = parents.concat([data[i].id]);
+                        }
+                        
+                    elementName.addEventListener('click', ()=>{
+                        //console.log(parents)
+                        //console.log(childParents)
+                        createTree(subElement, childParents, contentDiv, tableList, level+1, maxLevel);
+                        
+                    });
+                    listUl.appendChild(subElement);
+                }
+                elementTable.appendChild(listUl);
+                if(level != 0 && level != maxLevel+1){
+                    elementClick.classList.toggle("active");
+                    elementClick.nextElementSibling.classList.toggle("active");
+                }
+                console.log(elementTable)
+                
+            }
+            
+               
+        }
+        let tableList = ["institution", "structure", "departement", "semestre", "matiere", "section", "annee"]
+        let institutions = document.getElementById("content_rows");
+        let parents = [];
+        createTree(institutions, parents, null, tableList, level=0, maxLevel=2);
+        
+    </script>
+  </body>
+</html>

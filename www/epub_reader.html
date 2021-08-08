@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+        <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/build/pdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+        <script src="librairies/epubjs/dist/epub.min.js"></script>
+        
+        <script src=""></script>
+        <link rel="stylesheet" href="css/index.css">
+        <title>Hello World</title>
+    </head>
+    <style>
+      #parent_doc{
+        background-color: red;
+      }
+      #doc_container{
+        width: 100%;
+        height: 90%;
+        overflow: scroll;
+      }
+    </style>
+    <body>        
+          <ion-toolbar color="secondary">
+            <ion-buttons slot="secondary">
+              <ion-button>
+                <ion-icon slot="icon-only" name="person-circle"></ion-icon>
+              </ion-button>
+              <ion-button>
+                <ion-icon slot="icon-only" name="search"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            <ion-buttons slot="primary">
+              <ion-button color="primary">
+                <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            <ion-title>Johnson</ion-title>
+          </ion-toolbar>
+        
+          <ion-content [fullscreen]="true" id="parent_doc">
+           <div id="doc_container">
+           </div>
+          </ion-content>
+          
+          <script>
+             const bookOptions = {requestHeaders: { "Accept": "text/xml" } };
+               var Book = ePub('documents/math_1.epub');
+                Book.renderTo('doc_container', {
+                flow: "scrolled-doc", // For generic books
+                method: "continuous", // For generic books
+                width: "100%",
+                heigh: "90%"
+              });//div id
+                Book.rendition.display()
+            
+          </script>
+          
+          <script src="cordova.js"></script>
+        <script src="js/index.js"></script>
+    </body>
+</html>

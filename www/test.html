@@ -1,0 +1,193 @@
+
+<style>
+  #customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+.hide_id{
+  display: none;
+}
+</style>
+<table id="customers">
+  <thead>
+    <tr>
+      <th class="hide_id">id</th>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody id="content_rows">
+  </tbody>
+</table>
+<script>
+  
+  function loadInstitution(){
+    let institutions = document.getElementById("content_rows");
+    let dataInst = [{id: 1,name: "Université de Lomé"},{id: 2, name: "Université de Kara"}];
+    console.log("jklm")
+    for(let i=0; i<dataInst.length; i++){
+      let institution = document.createElement('tr');
+      institution.innerHTML = `
+                <td class="hide_id">`+dataInst[i].id+`</td>
+                <td>`+dataInst[i].name+`</td>`; 
+      createStructure(institution);
+      institutions.appendChild(institution);
+    }
+  }
+  loadInstitution();
+ 
+ function createStructure(institution){
+    let dveloppeInst = true;
+      let before = institution;
+      let deleteBefore = institution;
+      institution.addEventListener('click',()=>{
+        let dataStruc = [{id: 1,name: "Faculté des Sciences"},{id: 2, name: "Ecole Superieur d'Agronomie"}]
+        if(dveloppeInst){
+            for(let i =0; i<dataStruc.length; i++){
+              let structure = document.createElement('tr');
+              structure.style.paddingLeft = "30px";
+              structure.style.paddingRight = "0px";
+              structure.innerHTML = `
+                        <td class="hide_id">`+dataStruc[i].id+`</td>
+                        <td style="padding-left: 50px; padding-right: 0px;">`+dataStruc[i].name+`</td>`; 
+              
+              before.after(structure);
+              console.log(structure)
+              before = structure;
+              deleteBefore = structure;
+              deleteBefore = createDepartement(structure)
+            }
+            dveloppeInst = false;
+        }else{
+          while(deleteBefore != institution){
+              let previous = deleteBefore.previousSibling;
+              eraseSelector(deleteBefore);
+              deleteBefore = previous;
+          } 
+            
+          dveloppeInst = true;
+        }
+        
+      })
+  }
+  function createDepartement(structure){
+    let dveloppeStruc = true;
+      let before = structure;
+      structure.addEventListener('click',()=>{
+        let dataDepart = [{id: 1,name: "Mathématiques"},{id: 2, name: "Chimie"}]
+        if(dveloppeStruc){
+            for(let i =0; i<dataDepart.length; i++){
+              let departement = document.createElement('tr');
+              departement.style.paddingLeft = "30px";
+              departement.style.paddingRight = "0px";
+              departement.innerHTML = `
+                        <td class="hide_id">`+dataDepart[i].id+`</td>
+                        <td style="padding-left: 100px; padding-right: 0px;">`+dataDepart[i].name+`</td>`; 
+              
+              before.after(departement);
+              before = departement;
+              createSemestre(departement)
+            }
+            dveloppeStruc = false;
+            return before;
+        }else{
+          while(before != structure){
+              let previous = before.previousSibling;
+              eraseSelector(before);
+              before = previous;
+          } 
+            
+          dveloppeStruc = true;
+        }
+        
+      })
+  }
+  function createSemestre(departement){
+    let dveloppeDepar = true;
+      let before = departement;
+      departement.addEventListener('click',()=>{
+        let dataSem = [{id: 1,name: "Semestre 1"},{id: 2, name: "Semestre 2"}]
+        if(dveloppeDepar){
+            for(let i =0; i<dataSem.length; i++){
+              let semestre = document.createElement('tr');
+              semestre.style.paddingLeft = "30px";
+              semestre.style.paddingRight = "0px";
+              semestre.innerHTML = `
+                        <td class="hide_id">`+dataSem[i].id+`</td>
+                        <td style="padding-left: 150px; padding-right: 0px;">`+dataSem[i].name+`</td>`; 
+              before.after(semestre);
+              before = semestre;
+            }
+            dveloppeDepar = false;
+        }else{
+          while(before != departement){
+              let previous = before.previousSibling;
+              eraseSelector(before);
+              before = previous;
+          } 
+            
+          dveloppeDepar = true;
+        }
+        
+      })
+  }
+
+ function eraseSelector(element){
+            while (element.firstChild) {
+                element.removeChild(element.firstChild);
+            }
+        }
+</script>
+<!-- <!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+       <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
+        
+        <script src=""></script>
+        <link rel="stylesheet" href="css/index.css">
+        <title>Hello World</title>
+    </head>
+    <style>
+
+    </style>
+    <body>
+      <form>
+        <input name="pseudo" id="pseudo"></input>
+        <ion-button size="small" color="tertiary" id='butt_inst'>institution</ion-button>
+      </form>
+      <script>
+        let buttInst = document.getElementById("butt_inst");
+        buttInst.addEventListener('click', ()=>{
+          let inputPseudo = document.getElementById("pseudo");
+          let pseudo = inputPseudo.value;
+          console.log(pseudo)
+        })
+        
+      </script>
+    </body>
+</html>
+ -->

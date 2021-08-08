@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/index.js"></script>
+        <style type="text/css">
+      
+            .col-sm{
+              background-color: 
+            }
+            .form-contener{
+              width:70%; 
+              min-height:85vh; 
+              margin: auto auto auto auto;
+              padding: 2% 5% 10% 5%;
+              border-radius: 1vh;
+              border: 1px solid #7B7B7B;
+              background-color:#E0E0E0;
+            }
+            .card-title{
+                color:#272727;
+                font-size: 4.5vh;
+                text-align: center;
+                font-weight: bold;
+                font-family: "Times New Roman";
+                padding-top: 1vh;
+            }
+            .labelo{
+                color:#5B5B5B;
+                font-size: 2.5vh;
+                text-align: center;
+            }
+            #error_entry{
+              color: red;
+              font-style: italic;
+            }
+            #spa{
+              color: #003D79;
+              font-weight: bold;
+              font-family: "Times New Roman";
+            }
+            label {
+            margin : 10px;
+            }
+            .valid{
+            width: 30%;
+            margin-left: 35%;
+              margin-right: 35%;
+            }
+          </style>
+    </head>
+    <body>
+        <header>
+            <!-- Entete -->
+            <nav class="navbar navbar-dark bg-primary">
+               <a class="navbar-brand" href="#">
+                 <img src="images/icone_globe.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+                <strong>Togo Campus Virtuel</strong>
+               </a>
+             </nav>
+        </header>
+       
+       
+           <div class="container">
+                       <!-- content -->
+       
+       
+                <h3> Création de compte
+       
+       
+       <form class="needs-validation" novalidate action="controller/control_student_registration.php" method="post">
+       
+                 <!--Partie 1-->
+                 <fieldset>
+                     <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                             <label class="sr-only1" for="inlineFormInput1">Nom :</label>
+                             <input type="text" class="form-control mb-2" id="inlineFormInput1" name="name" placeholder="DOUMEVI" required>
+                           </div>
+       
+       
+                          <div class="col-md-4 mb-3">
+                             <label class="sr-only2" for="inlineFormInput2">Prénoms :</label>
+                             <input type="text" class="form-control mb-2" id="inlineFormInput2" name="prenoms" placeholder="Jeanne" required>
+                           </div>
+                         <div class="col-md-4 mb-3">
+                           <label for="exampleInputEmail1">Email :</label>
+                           <input type="mail" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="mail" placeholder="Entrer votre email" required>
+                           <small id="emailHelp" class="form-text text-muted">Votre email vous servira d'identifiant pour voss prochaines utilisations.</small>
+                         </div>
+                     </div>
+       
+                   </fieldset>
+       
+       
+                     <!--Partie 2-->
+       
+                     <fieldset>
+                      <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                             <label for="exampleInputPassword1">Mot de passe : </label>
+                             <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password">
+                           </div>
+                           <div class="col-md-4 mb-3">
+                             <label for="exampleInputPassword1">Confirmer le mot de passe:</label>
+                             <input type="password" class="form-control" id="exampleInputPassword1" name="conf_pass" placeholder="Password">
+                           </div>
+                     </div>
+                   </fieldset>
+       
+                    <!--Partie 3-->
+                    <fieldset>
+       
+                    <div class="form-row">
+                       <div class="col-md-4 mb-3">
+                            <label for="inputState1">Faculté : </label>
+                             <select id="inputState1" class="form-control" name="faculty" required>
+       
+                               <option selected value="0"> Choisir</option>
+                               <option value="FDS">Faculté des Sciences (FDS)</option>
+                               <option value="FDD">Faculté de Droit (FDD)</option>
+                               <option value="FLLA">Faculté des Lettres, Langues et Arts (FLLA)</option>
+                               <option value="FASEG">Faculté des Sciences Économiques et de Gestion (FASEG)</option>
+                               <option value="FSHS">Faculté des Sciences de l'Homme et de la Société (FSHS)</option>
+                               <option value="FSS">Faculté des Sciences de la Santé (FSS)</option>
+                              
+       
+                           </select>
+       
+                         </div>
+       
+                         <div class="col-md-4 mb-3">
+                           <label for="inputState2">Département de : </label>
+                             <select id="inputState2" class="form-control" name="departement" required>
+                               <option selected value="0"> Choisir</option>
+       
+                                 <option>Biochimie</option>
+                                 <option>Botanique</option>
+                                 <option>Chimie</option>
+                                 <option>Géologie</option>
+                                 <option>Mathématiques</option>
+                                 <option>Physiologie Animale</option>
+                                 <option>Physique</option>
+                                 <option>Zoologie et de Biologie Animale</option> 
+       
+                           </select>
+                         </div>
+                       </div>
+       
+                     </fieldset>
+       
+                         <!--Partie 3-->
+       
+                         <fieldset>
+                          <div class="form-row">
+                             <div class="col-md-4 mb-3">
+                                 <label class="sr-only3" for="inlineFormInput3">Numéro de téléphone : </label>
+                                 <input type="number" class="form-control mb-2" id="inlineFormInput3" placeholder="XX XX XX XX" name="telephone" required>
+                                 <small id="emailHelp" class="form-text text-muted">Ce numéro sera utiliser pour vous envoyer vos gain en argent selon vos points cumilés dans cette application</small>
+                             </div>
+       
+       
+                              <div class="col-md-4 mb-3">
+                                   <label class="sr-only4" for="inlineFormInput4">Numéro matricule :</label>
+                                   <input type="number" class="form-control mb-2" id="inlineFormInput4" placeholder="XXX XXX" name="matricule" required>
+                             </div>
+                         </div>
+       
+                       </fieldset>
+                     <br>
+       
+                       <button type="submit" class="btn btn-primary btn-lg valid">Connexion</button>
+       
+                     <br>
+       
+                </form>
+       
+       
+       
+       </div>
+       
+    </body> 
+</html>
+

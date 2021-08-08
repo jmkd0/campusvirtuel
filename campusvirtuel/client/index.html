@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/index.js"></script>
+        <style type="text/css">
+        body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 2rem;
+        padding: 5rem;
+        }
+
+        ul {
+        list-style-type: none;
+        }
+
+        .todos {
+        cursor: pointer;
+        }
+
+        .todo::before {
+        content: "\2610";
+        display: inline-block;
+        margin-right: 0.5rem;
+        }
+
+        .todo.active {
+        color: #888;
+        }
+
+        .todo.active::before {
+        content: "\2611";
+        }
+
+        /* toggler */
+        .toggler::before {
+        content: "\25B6";
+        display: inline-block;
+        margin-right: 0.5rem;
+        color:blue;
+        transition: transform 0.3s ease-in-out;
+        }
+
+        .toggler.active::before {
+        transform: rotate(90deg);
+        }
+
+        .toggler-target {
+        display: none;
+        }
+
+        .toggler-target.active {
+        display: block;
+        }
+        .div_color{
+            cursor: pointer;
+            border: 0.2px solid #626666;
+            background: linear-gradient(to bottom,silver, lightgray);
+            display: flex;
+            margin: auto auto auto auto;
+        }
+        .div_color:hover{
+            background: linear-gradient(to bottom,lightgray, silver);
+        }
+        .element_id{
+            flex: 5%;
+            display: none; 
+        }
+        .element_name{
+            flex: 80%;
+        }
+        .element_spinner{
+        }
+        .element_edit{
+            flex: 3%;
+            margin: auto auto auto auto;
+            position: relative;
+            background-color: red;
+        }
+        .element_edit_icon{
+            color:blue;
+            position: absolute;
+            top:50%;
+            left:100%;
+            transform:translate(-100%, -50%);
+        }
+        .class_window{
+            height: 60vh;
+            width: 80vw;
+        }
+    </style>
+          </style>
+    </head>
+    <body>
+        <header>
+            <!-- Entete -->
+            <nav class="navbar navbar-dark bg-primary">
+               <a class="navbar-brand" href="#">
+                 <img src="images/icone_globe.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+                <strong>Togo Campus Virtuel</strong>
+               </a>
+             </nav>
+
+        </header>
+        <!-- <div class="container">
+             <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#id_window">Open Modal</button>
+            <button type="button" class="btn btn-info btn-lg" id="but">Open Modal</button>
+            <div class="modal fade " id="id_window" role="dialog" >
+                    <div class="modal-dialog modal-xl modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Modal Header</h4>
+                          </div>
+                        <div class="modal-body">
+                            JEAN
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+            </div>
+        </div> -->
+        <div id="idcontainer"></div>
+        
+
+        <div id="content_rows"></div>
+    </body>
+  
+       <!-- jQuery first, then Popper.js, then Bootstrap JS 
+        
+       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+       <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+    <script>
+        function createTree(elementTable, parents, elementClick, parentSpinner, resolveData, tableList, level, maxLevel){
+            if(level < maxLevel){
+                
+                let table = tableList[level];
+
+                let promise = new Promise((resolve, reject)=>{
+                    let url = '/request';
+                    let data = {
+                        parents:  parents, 
+                        table: table
+                    }; 
+                    if(level != 0){
+                        parentSpinner.style.visibility = "visible";
+                        parentSpinner.classList.add("text-primary", "spinner-border");
+                    }
+                    queryData(resolve, url, data);
+                });
+                promise.then((data)=>{
+                    if(level != 0){
+                        parentSpinner.classList.remove("text-primary", "spinner-border");
+                        parentSpinner.style.visibility = "hidden";
+                        resolveData();
+                    }
+                    
+                    if(data && data.length){
+                        let listUl = document.createElement('ul');
+                        if(level != 0) listUl.classList.add("toggler-target"); 
+                        for(let i = 0; i<data.length; i++){
+                            let contentDiv = document.createElement("div");
+                            let subElement = document.createElement('li');
+                            contentDiv.classList.add("toggler", "div_color");
+                            let elementId = document.createElement('div');
+                            let elementName = document.createElement('div');
+                            let elementEdit = document.createElement('div');
+                            let elementSpinner = document.createElement('div');
+                            let editIcon = document.createElement("i");
+        
+                            elementId.classList.add("element_id");
+                            elementName.classList.add("element_name");
+                            elementEdit.classList.add("element_edit");
+                            elementSpinner.classList.add("element_spinner");
+                            elementSpinner.setAttribute("role", "status");
+                            contentDiv.classList.add("col-md-17","mb-1");
+                            editIcon.classList.add("fa","fa-edit");
+                            editIcon.classList.add("element_edit_icon");
+                            elementName.innerHTML = data[i].full_name;
+                            elementEdit.appendChild(editIcon);
+                            contentDiv.append(elementId, elementName, elementSpinner, elementEdit);
+                            subElement.appendChild(contentDiv);
+                            listUl.appendChild(subElement);
+                            
+                            let childParents = parents;
+                            if(level == 0){
+                                childParents = [data[i].id]
+                            }else{
+                                childParents = parents.concat([data[i].id]);
+                            } 
+                            let toDrop = true;
+                            elementName.addEventListener('click', ()=>{
+                                if(toDrop){
+                                    let promise = new Promise((resolve, reject)=>{
+                                        createTree(subElement, childParents, contentDiv, elementSpinner, resolve, tableList, level+1, maxLevel);
+                                        
+                                    });
+                                    promise.then(()=>{
+                                        toDrop = false;
+                                        contentDiv.classList.toggle("active");
+                                        if(level < maxLevel-1 && contentDiv.nextElementSibling != null) contentDiv.nextElementSibling.classList.toggle("active");
+                                    });
+                                }else{
+                                    toDrop = true;
+                                    contentDiv.classList.toggle("active");
+                                    if(level < maxLevel-1 && subElement.children[1] != null) subElement.children[1].remove();
+                                }  
+                            }); 
+                            elementEdit.addEventListener('click', ()=>{
+                                modifyElementDataBase(childParents, data[i].full_name);
+                            });
+                        }
+                        elementTable.appendChild(listUl); 
+                    }
+                }); 
+            }
+        }
+        function modifyElementDataBase(childParents, elementName){
+            let modal = document.createElement("div");
+            let modalContainer = document.createElement("div");
+            let modalHeader =  document.createElement("div");
+            let modalContent =  document.createElement("div");
+            let modalFooter =  document.createElement("div");
+            modal.classList.add("modal","fade");
+            modalContainer.classList.add("modal-dialog","modal-xl","modal-content");
+            modalHeader.classList.add("modal-header");
+            modalContent.classList.add("modal-body");
+            modalFooter.classList.add("modal-footer");
+            modalHeader.innerHTML = `<h4 class="modal-title">`+elementName+`</h4>`;
+            modalContent.innerHTML = childParents;
+            modalFooter.innerHTML = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>`;
+            modal.setAttribute("role","dialog");
+            modalContainer.append(modalHeader, modalContent, modalFooter);
+            modal.appendChild(modalContainer)
+            $(modal).modal();
+        }
+
+        let tableList = ["institution", "structure", "departement", "semestre", "matiere", "section", "epreuve"]
+        let institutions = document.getElementById("content_rows");
+        let parents = [];
+        createTree(institutions, parents, null, null, null, tableList, level=0, maxLevel=7);
+        
+        async function queryData(resolve, url = '', data = {}) {
+            const options = {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data) 
+            }
+            const response = await fetch(url, options);
+            /* let a = 200000000*2;
+        for (let i=0; i< a; i++){
+            let b = (i*i+i/2)/7;
+            if (i == a-1) console.log("done")
+        } */
+
+            resolve(response.json()); 
+        }
+        /* let parents = ["id_institution", "id_structure", "id_departement", "id_semestre", "id_matiere", "id_section", "id_annee"]
+        function sendRequest(numb_parent, id_recipient, id_loading, id_btn, table){
+            let bool = true;
+            let ids_parents = []
+            let recipient = document.getElementById(id_recipient);
+            let spin = document.getElementById(id_loading);
+            let btn = document.getElementById(id_btn);
+
+            resetChild(numb_parent);
+
+            for(let i=0; i<numb_parent; i++){
+                par = document.getElementById(parents[i]);
+                if(par.value == 0){
+                    bool = false;
+                    break;
+                }
+                ids_parents.push(par.value);
+            }
+            if(bool){
+                let url = '/request';
+                console.log(ids_parents)
+                console.log(table)
+                let data = {
+                    parents:  ids_parents,  //sendRequest(id_institution', 'ins_loading', 'btn_institution', 'institution')
+                    table: table,  //sendRequest('id_structure', 'str_loading', 'btn_structure', 'structure')
+                };               
+                waitResponse(data, url, btn, spin, recipient); 
+            }
+            
+        }
+        function setResponse(response, recipient){    
+            console.log(response)        
+            eraseSelector(recipient);
+            let selects = "<option value='0'>Choose</option>";
+            if (response && response.length){
+                for(let i=0; i<response.length; i++){
+                selects += "<option value='"+response[i].id+"'>"+response[i].full_name+"</option>";
+                }
+            }
+            recipient.innerHTML = selects;
+        }
+
+        function waitResponse(data, url, btn, spin, recipient){
+            enableLoading(btn, spin);
+            queryData(url, data).then(response => {
+                disableLoading(btn, spin);
+                setResponse(response, recipient)               
+            });
+        }
+        
+        function resetChild(numb_parent){
+            for(let i=numb_parent+1; i< parents.length; i++){
+                child = document.getElementById(parents[i]);
+                eraseSelector(child);
+                child.innerHTML = "<option value='0'>Choose</option>";
+            }
+        }
+        async function queryData(url = '', data = {}) {
+            const options = {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data) 
+            }
+            const response = await fetch(url, options);
+            return response.json(); 
+        }
+
+        function enableLoading(btn, spin){
+            document.querySelectorAll('.all_button').forEach(elem => {
+                elem.disabled = true;
+            });
+            btn.innerHTML = "Loading...";
+            spin.style.visibility = "visible";
+            spin.classList.add("spinner-border");
+            spin.classList.add("text-primary");
+        }
+        function disableLoading(btn, spin){
+            spin.classList.remove("spinner-border");
+            spin.classList.remove("text-primary");
+            spin.style.visibility = "hidden";
+            btn.innerHTML = "Load";
+            document.querySelectorAll('.all_button').forEach(elem => {
+            elem.disabled = false;
+            });
+        } */
+    </script>
+    <script>
+    
+    </script>
+    </body> 
+    
+</html>
+

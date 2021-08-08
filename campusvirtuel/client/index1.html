@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/index.js"></script>
+        <style type="text/css">
+      
+            .col-sm{
+              background-color: 
+            }
+            .form-contener{
+              width:70%; 
+              min-height:85vh; 
+              margin: auto auto auto auto;
+              padding: 2% 5% 10% 5%;
+              border-radius: 1vh;
+              border: 1px solid #7B7B7B;
+              background-color:#E0E0E0;
+            }
+            .card-title{
+                color:#272727;
+                font-size: 4.5vh;
+                text-align: center;
+                font-weight: bold;
+                font-family: "Times New Roman";
+                padding-top: 1vh;
+            }
+            .labelo{
+                color:#5B5B5B;
+                font-size: 2.5vh;
+                text-align: center;
+            }
+            #error_entry{
+              color: red;
+              font-style: italic;
+            }
+            #spa{
+              color: #003D79;
+              font-weight: bold;
+              font-family: "Times New Roman";
+            }
+          </style>
+    </head>
+    <body>
+        <h2>WELCOME 2</h2>
+        <img src="images/icone_globe.jpg" width="400" heigh="400">  
+        <div class="container">
+        <br>
+         <div class="form-contener">
+      <div class="row no-gutters">
+        <div class="col-md-12">
+          <div class="card-body">
+            <h5 class="card-title">Envoie d'anciennes épreuves de maths</h5>
+            <p class="card-text">Veuillez remplir les champs suivants pour partager des sujets anciens avec vos camarades dans le même département que vous.<br>Nous ne recevons que des fichiers sous les formats PNG, JPEG, PDF, DOC, DOCX, ODT... 
+            <br>Les fichiers GIF ne sont pas pris en compte.<br>
+            Avec Togo Campus Virtuel partager les sujets dont vous disposer et gagner de l'argent.<br></p>
+            <p style="color:#484891; font-size: 13px;">NB: Bonnus de <span id="spa">+10 points</span> à gagner après cette opération, ceci prolongera votre accessibilité à d'autres ressources de cette plateforme.</p>
+          </div>
+        </div>
+      </div>
+    <form class="needs-validation"  action="../controller/control_share_maths.php" enctype= "multipart/form-data" method="post">
+      <div class="form-group">
+        <label for="exampleFormControlFile1" class="labelo">Choisir un fichier: Max: 3Mo</label>
+        <input type="file" class="form-control-file" name = "file" id="exampleFormControlFile1" required>
+      </div>
+      <div>
+       <label for="inputState1" class="labelo">Type de sujet, Examen, Devoir ou autre: </label>
+        <select id="inputState1" class="form-control" name="type_sujet" required>
+          <option selected value=""> Choisir</option>
+          <option value="devoir">Devoir</option>
+          <option value="examen">Examen</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div>
+       <label for="inputState2" class="labelo">Choisissez le semestre: </label>
+        <select id="inputState2" class="form-control" name="semestre" required>
+          <option selected value=""> Choisir</option>
+          <option value="s1">Semestre 1</option>
+          <option value="s2">Semestre 2</option>
+          <option value="s3">Semestre 3</option>
+          <option value="s4">Semestre 4</option>
+          <option value="s5">Semestre 5</option>
+          <option value="s6">Semestre 6</option>
+        </select>
+      </div>
+      <div>
+       <label for="inputState3" class="labelo">Choisissez la matière: </label>
+        <select id="inputState3" class="form-control" name="ue_matiere" required>
+          <option selected value=""> Choisir</option>
+        </select>
+      </div>
+      <div>
+       <label for="inputState4" class="labelo">Choisissez l'année: </label>
+        <select id="inputState4" class="form-control" name="annee" required>
+          <option selected value=""> Choisir</option>
+        </select>
+      </div>
+      <br>
+        <button type="submit" name = "send" class="btn btn-primary btn-lg valid" style="position: relative; margin-left: 35%;">Envoyer</button>
+      <br>
+      <div id="error_entry"></div>
+    </form>
+        </div>    
+    </body> 
+</html>
+
