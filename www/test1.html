@@ -1,160 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-        body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 2rem;
-        padding: 5rem;
-        }
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <!-- Bootstrap CSS -->
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 
-        ul {
-        list-style-type: none;
-        }
+    <!-- Custom styles for this template -->
+    <link href="../css/styles.css" rel="stylesheet">
 
-        .todos {
-        cursor: pointer;
-        }
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
-        .todo::before {
-        content: "\2610";
-        display: inline-block;
-        margin-right: 0.5rem;
-        }
-
-        .todo.active {
-        color: #888;
-        }
-
-        .todo.active::before {
-        content: "\2611";
-        }
-
-        /* toggler */
-        .toggler::before {
-        content: "\25B6";
-        display: inline-block;
-        margin-right: 0.5rem;
-        transition: transform 0.3s ease-in-out;
-        }
-
-        .toggler.active::before {
-        transform: rotate(90deg);
-        }
-
-        .toggler-target {
-        display: none;
-        }
-
-        .toggler-target.active {
-        display: block;
-        }
-        .div_color{
-            cursor: pointer;
-            border: 0.2px solid #626666;
-            background: linear-gradient(to bottom,silver, lightgray);
-            display: flex;
-            margin: auto auto auto auto;
-        }
-        .div_color:hover{
-            background: linear-gradient(to bottom,lightgray, silver);;
-        }
-        .element_id{
-            flex: 5%;
-            display: none; 
-        }
-        .element_name{
-            flex: 80%;
-        }
-        .element_spinner{
-            flex: 3%;
-            border: 0.5px solid #626666;
-        }
-        .element_edit{
-            flex: 3%;
-            border: 0.5px solid #626666;
-        }
+    <title>Togo Campus Virtuel </title>
+    <style type="text/css">
+      
+      .col-sm{
+        background-color: 
+      }
+      .form-contener{
+        width:70%; 
+        min-height:85vh; 
+        margin: auto auto auto auto;
+        padding: 2% 5% 10% 5%;
+        border-radius: 1vh;
+        border: 1px solid #7B7B7B;
+        background-color:#E0E0E0;
+      }
+      .card-title{
+          color:#272727;
+          font-size: 4.5vh;
+          text-align: center;
+          font-weight: bold;
+          font-family: "Times New Roman";
+          padding-top: 1vh;
+      }
+      .labelo{
+          color:#5B5B5B;
+          font-size: 2.5vh;
+          text-align: center;
+      }
+      #error_entry{
+        color: red;
+        font-style: italic;
+      }
+      #spa{
+        color: #003D79;
+        font-weight: bold;
+        font-family: "Times New Roman";
+      }
     </style>
-    <title>Document</title>
   </head>
   <body>
+
     
-    <div id="content_rows"></div>
-    <script>
-        function getData(level){
-            let data = null;
-            switch (level){
-                case 0:
-                    data = [{id: 1,name: "Université de Lomé"},{id: 2, name: "Université de Kara"}];
-                    break;
-                case 1:
-                    data = [{id: 3,name: "Faculté des Sciences"},{id: 4, name: "Ecole Superieur d'Agronomie"}];
-                    break;
-                case 2:
-                    data = [{id: 5,name: "Mathématiques"},{id: 6, name: "Chimie"}]
-                    break;
-            
-            }
-            return data;
-        }
-        function createTree(elementTable, parents, elementClick, tableList, level, maxLevel){
-            if(level <= maxLevel){
-                let data = getData(level);
-                let listUl = document.createElement('ul');
-                
-                if(level != 0) listUl.classList.add("toggler-target");
-                
-                for(let i = 0; i<data.length; i++){
-                    let subElement = document.createElement('li');
-                    let contentDiv = document.createElement('div');
-                    contentDiv.classList.add("toggler", "div_color");
-                    let elementId = document.createElement('div');
-                    let elementName = document.createElement('div');
-                    let elementEdit = document.createElement('div');
-                    let elementSpinner = document.createElement('div');
-                    elementId.classList.add("element_id");
-                    elementName.classList.add("element_name");
-                    elementEdit.classList.add("element_edit");
-                    elementSpinner.classList.add("element_spinner");
-                    elementName.innerHTML = data[i].name;
-                    
-                    contentDiv.append(elementId, elementName, elementEdit, elementSpinner);
-                    
-                    subElement.appendChild(contentDiv);
-                    
-                        let childParents = parents;
-                        if(level == 0){
-                            childParents = [data[i].id]
-                        }else{
-                            childParents = parents.concat([data[i].id]);
-                        }
-                        
-                    elementName.addEventListener('click', ()=>{
-                        //console.log(parents)
-                        //console.log(childParents)
-                        createTree(subElement, childParents, contentDiv, tableList, level+1, maxLevel);
-                        
-                    });
-                    listUl.appendChild(subElement);
-                }
-                elementTable.appendChild(listUl);
-                if(level != 0 && level != maxLevel+1){
-                    elementClick.classList.toggle("active");
-                    elementClick.nextElementSibling.classList.toggle("active");
-                }
-                console.log(elementTable)
-                
-            }
-            
-               
-        }
-        let tableList = ["institution", "structure", "departement", "semestre", "matiere", "section", "annee"]
-        let institutions = document.getElementById("content_rows");
-        let parents = [];
-        createTree(institutions, parents, null, tableList, level=0, maxLevel=2);
+    <div class="container">
+                <!-- content -->
+
+    <br>
+     <div class="form-contener">
+          <div class="row no-gutters">
+            <div class="col-md-12">
+              <div class="card-body">
+                <h5 class="card-title">Envoie d'anciennes épreuves de maths</h5>
+                <p class="card-text">Veuillez remplir les champs suivants pour partager des sujets anciens avec vos camarades dans le même département que vous.<br>Nous ne recevons que des fichiers sous les formats PNG, JPEG, PDF, DOC, DOCX, ODT... 
+                <br>Les fichiers GIF ne sont pas pris en compte.<br>
+                Avec Togo Campus Virtuel partager les sujets dont vous disposer et gagner de l'argent.<br></p>
+                <p style="color:#484891; font-size: 13px;">NB: Bonnus de <span id="spa">+10 points</span> à gagner après cette opération, ceci prolongera votre accessibilité à d'autres ressources de cette plateforme.</p>
+              </div>
+            </div>
+          </div>
         
-    </script>
+     </div>
+     
+    <!-- Optional JavaScript -->
+    
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
   </body>
-</html>
+  </html>

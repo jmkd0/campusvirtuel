@@ -16,8 +16,8 @@ str.name,
 dep.name,
 sem.name,
 mat.name,
-sec.name, 
-epr.annee
+sec.full_name, 
+epr.full_name
 from epreuve epr
 left join section sec on sec.id = epr.id_section
 left join matiere_section mat_sec on mat_sec.id_section = sec.id
@@ -85,3 +85,24 @@ left join institution ins on ins.id = str.id_institution;
 select 
 ins.name
 from institution ins;
+
+
+select name, full_name, type, logo_path from institution 
+where id = "1b801205-f3c9-11eb-af39-7cb0c2b7a2c3";
+
+select name, full_name, type, logo_path from structure 
+where id="1e10e19e-f3cc-11eb-af39-7cb0c2b7a2c3";
+
+select name, full_name, logo_path from departement
+where id = "11f0f2d5-f3cd-11eb-af39-7cb0c2b7a2c3";
+
+select name, type from semestre;
+
+select name, full_name from matiere
+where id = "dbc2b2ef-f3cd-11eb-af39-7cb0c2b7a2c3";
+
+select full_name from section;
+
+select full_name, file_path from epreuve
+where id = "b38ad5a0-f3ce-11eb-af39-7cb0c2b7a2c3";
+

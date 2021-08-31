@@ -75,7 +75,7 @@ engine = innodb;
 
 create table section(
 id int not null primary key auto_increment,
-name varchar(10),
+full_name varchar(10),
 type varchar(20),
 logo_path varchar(100))
 engine = innodb;
@@ -96,7 +96,7 @@ engine = innodb;
 
 create table epreuve(
 id int not null primary key auto_increment,
-annee year,
+full_name year,
 file_path varchar(100),
 logo_path varchar(100),
 id_section int not null,

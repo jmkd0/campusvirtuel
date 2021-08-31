@@ -7,6 +7,7 @@ pseudo varchar(30),
 institution varchar(100),
 structure varchar(100),
 departement varchar(100),
+cycle varchar(20),
 mail varchar(50),
 password varchar(50),
 created_date date,
@@ -31,9 +32,9 @@ name varchar(30),
 full_name varchar(100),
 type varchar(20),
 logo_path varchar(100),
-id_institution char(36) not null,
 created_date date,
 updated_date date,
+id_institution char(36) not null,
 foreign key (id_institution) references institution (id)
 on delete cascade on update cascade)
 engine = innodb;
@@ -57,8 +58,9 @@ id char(36) default (uuid()) not null primary key,
 name varchar(10),
 type varchar(20),
 full_name varchar(20),
-logo_path varchar(100) )
+cycle varchar(20))
 engine = innodb;
+
 
 
 create table departement_semestre(
@@ -88,9 +90,7 @@ engine = innodb;
 
 create table section(
 id char(36) default (uuid()) not null primary key,
-full_name varchar(10),
-type varchar(20),
-logo_path varchar(100))
+full_name varchar(20))
 engine = innodb;
 
 
@@ -111,7 +111,6 @@ create table epreuve(
 id char(36) default (uuid()) not null primary key,
 full_name year,
 file_path varchar(100),
-logo_path varchar(100),
 id_section char(36) not null,
 created_date date,
 updated_date date,

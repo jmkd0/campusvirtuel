@@ -94,21 +94,19 @@ class View{
     getRemoteData(){
     
         let dataContainer = document.getElementById("remote_data_container");
-        //let url = 'http://192.168.0.23:3000/request_native'
-        let url = 'https://jsonplaceholder.typicode.com/posts'
+        let url = 'https://jmkd.fr/campusvirtuel/request_native';
         let request_data = {
-            parents:  ['1'],   
-            table: 'structure'
+            parents:  [],   
+            table: 'institution'
         };
         cordova.plugin.http.post(url, request_data, {}, function(response) {
-            data =  JSON.parse(response.data)
-            alert(JSON.stringify(data))
+            alert(response.data);
+            let data = response.data;
             dataContainer.innerHTML = JSON.stringify(data)
-            /*dataContainer.innerHTML = "data: "+data[0].full_name; */
-        }, function(error) {
-            alert(JSON.stringify(error))
-            console.log(error);
-        });
+            dataContainer.innerHTML = "data: "+data;
+        }, function(error) { 
+            console.log("ERROR_jean "+error);
+        }); 
     
     }
     deleteChilds(element){

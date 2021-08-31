@@ -1,3 +1,122 @@
+body {
+    font-family: "Times New Roman", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2rem;
+    }
+
+    ul {
+    list-style-type: none;
+    }
+#container{
+    width:95%; 
+    min-height:85vh; 
+    margin: 1% auto auto auto;
+    padding: 1% 1% 0% 1%;
+    border-radius: 1vh;
+    border: 1px solid #7B7B7B;
+    background-color:#E0E0E0;
+}
+/* #content_rows{
+    
+} */
+    .todos {
+    cursor: pointer;
+    }
+
+    .todo::before {
+    content: "\2610";
+    display: inline-block;
+    margin-right: 0.5rem;
+    }
+
+    .todo.active {
+    color: #888;
+    }
+
+    .todo.active::before {
+    content: "\2611";
+    }
+
+    /* toggler */
+    .toggler::before {
+    content: "\25B6";
+    display: inline-block;
+    margin-right: 0.5rem;
+    color:blue;
+    transition: transform 0.3s ease-in-out;
+    }
+
+    .toggler.active::before {
+    transform: rotate(90deg);
+    }
+
+    .toggler-target {
+    display: none;
+    }
+
+    .toggler-target.active {
+    display: block;
+    }
+    .div_color{
+        cursor: pointer;
+        border: 0.2px solid #626666;
+        background: linear-gradient(to bottom,silver, lightgray);
+        display: flex;
+        margin: auto auto auto auto;
+    }
+    .div_color:hover{
+        background: linear-gradient(to bottom,lightgray, silver);
+    }
+    .element_id{
+        flex: 5%;
+        display: none; 
+    }
+    .element_name{
+        flex: 80%;
+    }
+   /*  .element_spinner{
+        
+    } */
+    .element_insert, .element_edit{
+        flex: 3%;
+        margin: auto auto auto auto;
+        position: relative;
+        background-color: red;
+    }
+    .element_insert_icon, .element_edit_icon{
+        color:blue;
+        position: absolute;
+        top:50%;
+        left:100%;
+        transform:translate(-100%, -50%);
+    }
+    
+    .class_window{
+        height: 60vh;
+        width: 80vw;
+    }
+    /* Modal Header */
+    .header_modal{
+        width: 100%; 
+        display: flex;
+        margin: auto auto auto auto;
+    }
+    .title_container{
+        flex: 85;
+        height: 150px;
+    }
+    .logo_container{
+        flex: 10;
+        height: 150px;
+
+    }
+    .image_panel{
+        width: 100%;
+        height: 100px;
+    }
+    .image_panel img{
+        width: 100%;
+        height: 100%;
+    }
 h2{
     color:green;
 }

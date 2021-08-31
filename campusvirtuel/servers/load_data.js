@@ -1,14 +1,6 @@
-let mysql=require('mysql');
-
-let conn = mysql.createConnection({
-    host:       'localhost',
-    user:       'root',
-    password:   'dakomaje00',
-    database:   'tcv'
-});
-
+let conn = require('./connection');
 function loadData(condition, response){
-    console.log(condition)
+    //console.log(condition)
     switch(condition.table){
         case 'institution':
             //load structures
@@ -43,6 +35,7 @@ exports.loadData = loadData;
 function loadInstitution(response){
     request = `select 
                 id,
+                name,
                 full_name
                 from institution`;
     returnResult(request, null, response);    
@@ -51,6 +44,7 @@ function loadInstitution(response){
 function loadStructure(parent, response){
     request = `select 
                 str.id,
+                str.name,
                 str.full_name
                 from structure str
                 left join institution ins on ins.id = str.id_institution
@@ -60,6 +54,7 @@ function loadStructure(parent, response){
 function loadDepartement(parent, response){
     request = `select 
                 dep.id,
+                dep.name,
                 dep.full_name
                 from departement dep
                 left join structure str on str.id = dep.id_structure
@@ -70,6 +65,7 @@ function loadDepartement(parent, response){
 function loadSemestre(parent, response){
     request = `select 
                 sem.id,
+                sem.name,
                 sem.full_name
                 from semestre sem
                 left join departement_semestre dep_sem on dep_sem.id_semestre = sem.id
@@ -82,11 +78,11 @@ function loadSemestre(parent, response){
 function loadMatiere(parent, response){
     request = `select 
                     mat.id,
+                    mat.name,
                     mat.full_name
                     from matiere mat
                     left join semestre sem on sem.id = mat.id_semestre
-                    left join departement_semestre dep_sem on dep_sem.id_semestre = sem.id
-                    left join departement dep on dep.id = dep_sem.id_departement
+                    left join departement dep on dep.id = mat.id_departement
                     left join structure str on str.id = dep.id_structure
                     left join institution ins on ins.id = str.id_institution
                     where ins.id = ? and str.id = ? and dep.id = ? and sem.id = ?`;
@@ -100,8 +96,7 @@ function loadSection(parent, response){
                     left join matiere_section mat_sec on mat_sec.id_section = sec.id
                     left join matiere mat on mat.id = mat_sec.id_matiere
                     left join semestre sem on sem.id = mat.id_semestre
-                    left join departement_semestre dep_sem on dep_sem.id_semestre = sem.id
-                    left join departement dep on dep.id = dep_sem.id_departement
+                    left join departement dep on dep.id = mat.id_departement
                     left join structure str on str.id = dep.id_structure
                     left join institution ins on ins.id = str.id_institution
                     where ins.id = ? and str.id = ? and dep.id = ? and sem.id = ? and mat.id = ?`;
@@ -113,11 +108,9 @@ function loadAnnee(parent, response){
                     epr.full_name
                     from epreuve epr
                     left join section sec on sec.id = epr.id_section
-                    left join matiere_section mat_sec on mat_sec.id_section = sec.id
-                    left join matiere mat on mat.id = mat_sec.id_matiere
+                    left join matiere mat on mat.id = epr.id_matiere
                     left join semestre sem on sem.id = mat.id_semestre
-                    left join departement_semestre dep_sem on dep_sem.id_semestre = sem.id
-                    left join departement dep on dep.id = dep_sem.id_departement
+                    left join departement dep on dep.id = mat.id_departement
                     left join structure str on str.id = dep.id_structure
                     left join institution ins on ins.id = str.id_institution
                     where ins.id = ? and str.id = ? and dep.id = ? and sem.id = ? and mat.id = ? and sec.id = ?`;
@@ -131,12 +124,12 @@ function returnResult(request, parent, response){
             for(let i=0; i<result.length; i++){
                 data[i]={
                     id:           result[i].id,
+                    name:         result[i].name? result[i].name:null,
                     full_name:    result[i].full_name
                 }
             }
-            console.log(data);
             response.json(data);
         }else response.json(null);
-    })
+    });
 }
 
