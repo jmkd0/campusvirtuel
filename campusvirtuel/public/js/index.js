@@ -4,6 +4,7 @@ function createTree(elementTable, parentsId, parentsName, elementClick, parentSp
         let table = tableList[level];
 
         let promise = new Promise((resolve, reject)=>{
+            console.log("guhijoklmù")
             let url = 'http://localhost:3000/request';
             let data = {
                 parents:  parentsId, 

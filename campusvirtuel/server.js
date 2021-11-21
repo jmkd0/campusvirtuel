@@ -21,7 +21,7 @@ app.get('/',(request, response, next)=>{
     response.sendFile(path.join(__dirname+'/client/index.html'));
 });
 app.post('/request', (request, response)=>{
-    console.log("well")
+    console.log(request.body.data)
     let data = JSON.parse(request.body.data);
     load_data.loadData(data, response);
 });

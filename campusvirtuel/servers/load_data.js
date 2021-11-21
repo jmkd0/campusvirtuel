@@ -40,17 +40,17 @@ function loadInstitution(response){
                 from institution`;
     returnResult(request, null, response);    
 }
-
-function loadStructure(parent, response){
+function loadStructure(parrent, response){
     request = `select 
-                str.id,
-                str.name,
-                str.full_name
-                from structure str
-                left join institution ins on ins.id = str.id_institution
-                where ins.id = ?`;
-    returnResult(request, parent, response);
+                    str.id,
+                    str.name,
+                    str.full_name
+                    from structure str
+                    left join institution ins on ins.id = str.id_institution
+                    where ins.id = $1`;
+    returnResult(request, parrent, response);    
 }
+
 function loadDepartement(parent, response){
     request = `select 
                 dep.id,
@@ -59,7 +59,7 @@ function loadDepartement(parent, response){
                 from departement dep
                 left join structure str on str.id = dep.id_structure
                 left join institution ins on ins.id = str.id_institution
-                where ins.id = ? and str.id = ?`;
+                where ins.id = $1 and str.id = $2`;
     returnResult(request, parent, response);
 }
 function loadSemestre(parent, response){
@@ -72,7 +72,7 @@ function loadSemestre(parent, response){
                 left join departement dep on dep.id = dep_sem.id_departement
                 left join structure str on str.id = dep.id_structure
                 left join institution ins on ins.id = str.id_institution
-                where ins.id = ? and str.id = ? and dep.id = ?`;
+                where ins.id = $1 and str.id = $2 and dep.id = $3`;
     returnResult(request, parent, response);
 }
 function loadMatiere(parent, response){
@@ -85,7 +85,7 @@ function loadMatiere(parent, response){
                     left join departement dep on dep.id = mat.id_departement
                     left join structure str on str.id = dep.id_structure
                     left join institution ins on ins.id = str.id_institution
-                    where ins.id = ? and str.id = ? and dep.id = ? and sem.id = ?`;
+                    where ins.id = $1 and str.id = $2 and dep.id = $3 and sem.id = $4`;
     returnResult(request, parent, response);
 }
 function loadSection(parent, response){
@@ -99,7 +99,7 @@ function loadSection(parent, response){
                     left join departement dep on dep.id = mat.id_departement
                     left join structure str on str.id = dep.id_structure
                     left join institution ins on ins.id = str.id_institution
-                    where ins.id = ? and str.id = ? and dep.id = ? and sem.id = ? and mat.id = ?`;
+                    where ins.id = $1 and str.id = $2 and dep.id = $3 and sem.id = $4 and mat.id = $5`;
     returnResult(request, parent, response);
 }
 function loadAnnee(parent, response){
@@ -113,23 +113,23 @@ function loadAnnee(parent, response){
                     left join departement dep on dep.id = mat.id_departement
                     left join structure str on str.id = dep.id_structure
                     left join institution ins on ins.id = str.id_institution
-                    where ins.id = ? and str.id = ? and dep.id = ? and sem.id = ? and mat.id = ? and sec.id = ?`;
+                    where ins.id = $1 and str.id = $2 and dep.id = $3 and sem.id = $4 and mat.id = $5 and sec.id = $6`;
     returnResult(request, parent, response);
 }
 function returnResult(request, parent, response){
     conn.query(request, parent, function(error, result, next){
         if(error) throw error;
-        if(result && result.length){  
+        if(result && result.rowCount){  
             let data=[];
-            for(let i=0; i<result.length; i++){
+            for(let i=0; i<result.rowCount; i++){
                 data[i]={
-                    id:           result[i].id,
-                    name:         result[i].name? result[i].name:null,
-                    full_name:    result[i].full_name
+                    id:           result.rows[i].id,
+                    name:         result.rows[i].name? result.rows[i].name:null,
+                    full_name:    result.rows[i].full_name
                 }
             }
             response.json(data);
-        }else response.json(null);
+        }else{ response.json(null);}
     });
 }
 

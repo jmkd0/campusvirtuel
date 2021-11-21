@@ -1,7 +1,6 @@
 let conn = require('./connection');
 
 function loadOneInfo(condition, response){
-    console.log(condition)
     switch(condition.table){
         case 'institution':
             //load structures
@@ -32,17 +31,17 @@ function loadOneInfo(condition, response){
 exports.loadOneInfo = loadOneInfo;
 
 function loadInstitution(elementId, response){
-    let request = `select name, full_name, type, logo_path from institution where id = ?`;
-    conn.query(request, elementId, function(error, result, next){
+    let request = `select name, full_name, type, logo_path from institution where id = $1`;
+    conn.query(request, [elementId], function(error, result, next){
         if(error) throw error;
-        if(result && result.length){  
+        if(result && result.rowCount){  
             let data=[];
-            for(let i=0; i<result.length; i++){
+            for(let i=0; i<result.rowCount; i++){
                 data[i]={
-                    name: result[i].name,
-                    full_name:    result[i].full_name,
-                    type:    result[i].type,
-                    logo_path:    result[i].logo_path
+                    name: result.rows[i].name,
+                    full_name:    result.rows[i].full_name,
+                    type:    result.rows[i].type,
+                    logo_path:    result.rows[i].logo_path
                 }
             }
             response.json(data);
@@ -50,17 +49,17 @@ function loadInstitution(elementId, response){
     });
 }
 function loadStructure(elementId, response){
-    let request = `select name, full_name, type, logo_path from structure where id = ?`;
-    conn.query(request, elementId, function(error, result, next){
+    let request = `select name, full_name, type, logo_path from structure where id = $1`;
+    conn.query(request, [elementId], function(error, result, next){
         if(error) throw error;
-        if(result && result.length){  
+        if(result && result.rowCount){  
             let data=[];
-            for(let i=0; i<result.length; i++){
+            for(let i=0; i<result.rowCount; i++){
                 data[i]={
-                    name: result[i].name,
-                    full_name:    result[i].full_name,
-                    type:    result[i].type,
-                    logo_path:    result[i].logo_path
+                    name: result.rows[i].name,
+                    full_name:    result.rows[i].full_name,
+                    type:    result.rows[i].type,
+                    logo_path:    result.rows[i].logo_path
                 }
             }
             response.json(data);
@@ -68,16 +67,16 @@ function loadStructure(elementId, response){
     });
 }
 function loadDepartement(elementId, response){
-    let request = `select name, full_name, logo_path from departement where id = ?`;
-    conn.query(request, elementId, function(error, result, next){
+    let request = `select name, full_name, logo_path from departement where id = $1`;
+    conn.query(request, [elementId], function(error, result, next){
         if(error) throw error;
-        if(result && result.length){  
+        if(result && result.rowCount){  
             let data=[];
-            for(let i=0; i<result.length; i++){
+            for(let i=0; i<result.rowCount; i++){
                 data[i]={
-                    name: result[i].name,
-                    full_name:    result[i].full_name,
-                    logo_path:    result[i].logo_path
+                    name: result.rows[i].name,
+                    full_name:    result.rows[i].full_name,
+                    logo_path:    result.rows[i].logo_path
                 }
             }
             response.json(data);
@@ -86,15 +85,15 @@ function loadDepartement(elementId, response){
 }
 function loadSemestre(elementId, response){
     let request = `select name, full_name, type from semestre`;
-    conn.query(request, elementId, function(error, result, next){
+    conn.query(request, null, function(error, result, next){
         if(error) throw error;
-        if(result && result.length){  
+        if(result && result.rowCount){  
             let data=[];
-            for(let i=0; i<result.length; i++){
+            for(let i=0; i<result.rowCount; i++){
                 data[i]={
-                    name: result[i].name,
-                    full_name: result[i].full_name,
-                    type:    result[i].type
+                    name: result.rows[i].name,
+                    full_name: result.rows[i].full_name,
+                    type:    result.rows[i].type
                 }
             }
             response.json(data);
@@ -102,15 +101,15 @@ function loadSemestre(elementId, response){
     });
 }
 function loadMatiere(elementId, response){
-    let request = `select name, full_name from matiere where id = ?`;
-    conn.query(request, elementId, function(error, result, next){
+    let request = `select name, full_name from matiere where id = $1`;
+    conn.query(request, [elementId], function(error, result, next){
         if(error) throw error;
-        if(result && result.length){  
+        if(result && result.rowCount){  
             let data=[];
-            for(let i=0; i<result.length; i++){
+            for(let i=0; i<result.rowCount; i++){
                 data[i]={
-                    name: result[i].name,
-                    full_name:    result[i].full_name
+                    name: result.rows[i].name,
+                    full_name:    result.rows[i].full_name
                 }
             }
             response.json(data);
@@ -119,13 +118,13 @@ function loadMatiere(elementId, response){
 }
 function loadSection(elementId, response){
     let request = `select full_name from section`;
-    conn.query(request, elementId, function(error, result, next){
+    conn.query(request, null, function(error, result, next){
         if(error) throw error;
-        if(result && result.length){  
+        if(result && result.rowCount){  
             let data=[];
-            for(let i=0; i<result.length; i++){
+            for(let i=0; i<result.rowCount; i++){
                 data[i]={
-                    full_name:    result[i].full_name
+                    full_name:    result.rows[i].full_name
                 }
             }
             response.json(data);
@@ -133,15 +132,15 @@ function loadSection(elementId, response){
     });
 }
 function loadAnnee(elementId, response){
-    let request = `select full_name, file_path from epreuve where id = ?`;
-    conn.query(request, elementId, function(error, result, next){
+    let request = `select full_name, file_path from epreuve where id = $1`;
+    conn.query(request, [elementId], function(error, result, next){
         if(error) throw error;
-        if(result && result.length){  
+        if(result && result.rowCount){  
             let data=[];
-            for(let i=0; i<result.length; i++){
+            for(let i=0; i<result.rowCount; i++){
                 data[i]={
-                    full_name:    result[i].full_name,
-                    file_path: result[i].file_path
+                    full_name:    result.rows[i].full_name,
+                    file_path: result.rows[i].file_path
                 }
             }
             response.json(data);
