@@ -19,8 +19,8 @@ create table student(
 	cycle varchar,
 	mail varchar,
 	password varchar,
-	created_date date not null ,
-	updated_date date not null 
+	created_date timestamp not null ,
+	updated_date timestamp not null 
 );
 
 create table institution(
@@ -29,8 +29,8 @@ create table institution(
 	full_name varchar,
 	type varchar,
 	file_name varchar,
-	created_date date not null ,
-	updated_date date not null 
+	created_date timestamp not null ,
+	updated_date timestamp not null 
 );
 
 
@@ -40,8 +40,8 @@ create table structure(
 	full_name varchar,
 	type varchar,
 	file_name varchar,
-	created_date date not null ,
-	updated_date date not null ,
+	created_date timestamp not null ,
+	updated_date timestamp not null ,
 	id_institution uuid not null,
 	foreign key (id_institution) references institution (id)
 	on delete cascade on update cascade
@@ -53,8 +53,8 @@ create table departement(
 	name varchar,
 	full_name varchar,
 	file_name varchar,
-	created_date date not null ,
-	updated_date date not null ,
+	created_date timestamp not null ,
+	updated_date timestamp not null ,
 	id_structure uuid not null,
 	foreign key (id_structure) references structure (id)
 	on delete cascade on update cascade
@@ -71,8 +71,8 @@ create table semestre(
 create table departement_semestre(
 	id_departement uuid not null,
 	id_semestre uuid not null,
-	created_date date not null ,
-	updated_date date not null ,
+	created_date timestamp not null ,
+	updated_date timestamp not null ,
 	primary key (id_departement, id_semestre),
 	foreign key (id_departement) references departement (id)
 	on delete cascade on update cascade,
@@ -84,8 +84,8 @@ create table matiere(
 	id      uuid not null primary key,
 	name varchar,
 	full_name varchar,
-	created_date date not null ,
-	updated_date date not null ,
+	created_date timestamp not null ,
+	updated_date timestamp not null ,
 	id_departement uuid not null,
 	id_semestre uuid not null,
 	foreign key (id_departement, id_semestre) references departement_semestre (id_departement, id_semestre)
@@ -100,8 +100,8 @@ create table section(
 create table matiere_section(
 	id_matiere uuid not null,
 	id_section uuid not null,
-	created_date date not null ,
-	updated_date date not null ,
+	created_date timestamp not null ,
+	updated_date timestamp not null ,
 	primary key (id_matiere, id_section),
 	foreign key (id_matiere) references matiere (id)
 	on delete cascade on update cascade,
@@ -116,8 +116,8 @@ create table epreuve(
 	file_name varchar,
 	id_matiere uuid not null,
 	id_section uuid not null,
-	created_date date not null ,
-	updated_date date not null ,
+	created_date timestamp not null ,
+	updated_date timestamp not null ,
 	foreign key (id_matiere, id_section) references matiere_section (id_matiere, id_section)
 	on delete cascade on update cascade
 );
