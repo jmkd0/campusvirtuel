@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:dio/dio.dart';
 import 'dart:async';
+import 'dart:io';
 import 'database.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
+import './main.dart';
 class InstitutionView extends StatefulWidget {
   final DatabaseHandler databaseHandler;
-  InstitutionView({required this.databaseHandler}) ;
+  final List pathIds;
+  InstitutionView({required this.databaseHandler, required this.pathIds}) ;
 
   @override
   State<StatefulWidget> createState() => InstitutionViewState();
@@ -16,52 +20,44 @@ class InstitutionView extends StatefulWidget {
 class InstitutionViewState extends State<InstitutionView> {
   final logger = Logger();
   List<dynamic> dataToDisplay = [];
-  int count = 0;
+  InstitutionDataController intituData = InstitutionDataController();
 
   @override
-  void initState() async{
-    super.initState();
-    InstitutionDataController intituData = InstitutionDataController();
-    Fluttertoast.showToast(
-                    msg: 'welcome',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.black87,
-                    textColor: Colors.white);
-    dataToDisplay = await intituData.getInstitution(widget.databaseHandler);
-    Fluttertoast.showToast(
-                    msg: '${dataToDisplay[0][0].fileName}',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.black87,
-                    textColor: Colors.white);
-  }
+  Widget build(BuildContext context) => FutureBuilder(
+    future: intituData.getInstitution(widget.databaseHandler),
+    builder: (context, snapshot){
+      return WillPopScope(
+          onWillPop: () async{
+            Fluttertoast.showToast(
+                          msg: 'goodbye',
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.black87,
+                          textColor: Colors.white);
+            return true;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text("Institutions"),
+              backgroundColor: const Color(0xff00B19e),
+
+            ),
+            body: snapshot.hasData? buildPage(snapshot.data) : Helpers.buildWaiting()
+          )
+        );
+    }
+  );
   
-  @override
-  Widget build(BuildContext context)  {
-    return WillPopScope(
-      onWillPop: () async{
-        Fluttertoast.showToast(
-                      msg: 'goodbye',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      backgroundColor: Colors.black87,
-                      textColor: Colors.white);
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Institutions"),
-          backgroundColor: const Color(0xff00B19e),
+  buildPage(response){
+    List data = response["institutions"];
 
-        ),
-        body: AnimationLimiter(
+    int count = data.length;
+    return AnimationLimiter(
           child: GridView.builder(
-            itemCount: dataToDisplay[0].length,
+            itemCount: count,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
             itemBuilder: (BuildContext context, int index) {
-
-              String imageLocalName = "assets/default_logo.png";
+              Future<String> localImage = downloadImage(response, data[index]);
 
               return AnimationConfiguration.staggeredList(
                 position: index,
@@ -81,10 +77,31 @@ class InstitutionViewState extends State<InstitutionView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(flex: 50, child: Stack(
-                                    alignment: Alignment.bottomLeft,
+                                    alignment: Alignment.bottomLeft,//downloadImage(response, data[index])
                                     children: <Widget>[
-                                      
-                                      Ink.image( image: AssetImage(imageLocalName), fit: BoxFit.fitWidth,),
+                                      FutureBuilder(
+                                        future: downloadImage(response, data[index]),
+                                        builder: (context, snapshot) {
+                                          //print(snapshot.hasData);
+                                            if (snapshot.hasData) {
+                                              print(snapshot.data);
+                                              /* if (data[index].name == "UL"){
+                                                var file = File(snapshot.data.toString());
+        Fluttertoast.showToast(
+                                                      msg: '${file.lengthSync()}',
+                                                      toastLength: Toast.LENGTH_SHORT,
+                                                      gravity: ToastGravity.BOTTOM,
+                                                      backgroundColor: Colors.black87,
+                                                      textColor: Colors.white);
+                                              } */
+                                                return  Ink.image( image: AssetImage(snapshot.data.toString()),fit: BoxFit.fitWidth,);
+                                              } else if (snapshot.hasError) {
+                                                return Ink.image( image: const AssetImage("assets/logos/default_logo.png"),fit: BoxFit.fitWidth,);
+                                              }
+                                          
+                                          return Ink.image( image: const AssetImage("assets/logos/default_logo.png"),fit: BoxFit.fitWidth,);
+                                        },
+                                      ),
                                       const Center(child: Text("", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),),),
                                     ],//widget.institutionList[index].name
                                   ),),
@@ -93,14 +110,14 @@ class InstitutionViewState extends State<InstitutionView> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                      Text(dataToDisplay[0][index].name, style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold, fontSize: 25),)
+                                      Text(data[index].name, style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold, fontSize: 25),)
                                       ],),)),
                                   Expanded(flex: 30, child: Padding(
                                     padding: const EdgeInsets.only(left: 5, right:5),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text(dataToDisplay[0][index].fullName, style: const TextStyle(color: Colors.black54),)
+                                        Text(data[index].fullName, style: const TextStyle(color: Colors.black54),)
                                       ],),))],
                               ),
                             ),
@@ -110,9 +127,38 @@ class InstitutionViewState extends State<InstitutionView> {
               );
             },
           ),
-        ),
-      )
-    );
+        );
+  }
+  //Download tutorial: https://youtu.be/Gru7swUQqsg
+  Future<String> downloadImage(data, element) async {
+    final directory = await getApplicationDocumentsDirectory();
+    Dio dio = Dio();
+    dio.options.connectTimeout = 6000;
+    if (element.fileName != 'null'){
+      if(data["insert"].contains(element.id) || data["update"].contains(element.id)){
+        
+        String urlPath = "http://enovsky.com/campusvirtuel/public/logos/"+element.fileName;
+        String savePath = directory.path+"/"+element.fileName;
+        
+        print(2);
+          print("1");
+          await dio.download(urlPath, savePath, onReceiveProgress: (receive, total){});
+          
+          print("HAA");
+          print(directory.listSync());
+          Fluttertoast.showToast(
+                    msg: '${directory.listSync()}',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.black87,
+                    textColor: Colors.white);
+          return directory.path+"/"+element.fileName; 
+      }else{
+        
+        return directory.path+"/"+element.fileName; }
+    }else {
+      print("jh");
+      return "assets/logos/default_logo.png"; }
   }
   
 }
@@ -170,7 +216,7 @@ class InstitutionDataController {
 		}
     return institutions;
   }
-  Future<List> getRemoteInstitution(databaseHandler, localInfos) async{
+  Future<Map> getRemoteInstitution(databaseHandler, localInfos) async{
     String url = 'http://enovsky.com/campusvirtuel/request_native';
     var data = {
       'parents':  [],
@@ -181,12 +227,6 @@ class InstitutionDataController {
       Dio dio = Dio();
       Response response = await dio.post(url, data: data, options: Options(contentType: Headers.formUrlEncodedContentType));
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Fluttertoast.showToast(
-                    msg: '${response.data}',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.black87,
-                    textColor: Colors.white);
         //Insert new data 
         List insertData = response.data['insert'];
         List newInsert = [];
@@ -208,15 +248,15 @@ class InstitutionDataController {
         for (int i = 0; i < deleteData.length; i++) {
           deleteInstitution(databaseHandler, deleteData[i]);
         }
-        return [newInsert, newUpdate];
+        return {"insert": newInsert, "update": newUpdate};
       } else {
         throw Exception('Failed to creat');
       }
     } catch (error){
-      return [];
+      return {};
     }
   }
-  Future<List> getInstitution(databaseHandler) async{
+  Future<Map> getInstitution(databaseHandler) async{
     
     List<Map<String, dynamic>> localInfos = [];
     List<Institution> institutionLocal = await selectInstitution(databaseHandler);
@@ -224,21 +264,17 @@ class InstitutionDataController {
     for(Institution institution in institutionLocal){
       localInfos.add(institution.toMap());
     }
-    List modifyElements = await getRemoteInstitution(databaseHandler, localInfos);
-    Fluttertoast.showToast(
-                    msg: '${modifyElements}',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.black87,
-                    textColor: Colors.white);
+    Map response = await getRemoteInstitution(databaseHandler, localInfos);
+    //saveFiles(modifyElements);
     List<Institution>  institutions = await selectInstitution(databaseHandler);
-    Fluttertoast.showToast(
+    response["institutions"] = institutions;
+     /* Fluttertoast.showToast(
                     msg: '${institutionLocal[0].fileName}',
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                     backgroundColor: Colors.black87,
-                    textColor: Colors.white);
-    return [institutions, modifyElements];
+                    textColor: Colors.white); */
+    return response;
   }
 }
 
@@ -253,3 +289,23 @@ class InstitutionDataController {
                     backgroundColor: Colors.black87,
                     textColor: Colors.white);
                      */
+/* String updateImage(element, modifyElements){
+    import 'package:flutter_downloader/flutter_downloader.dart';
+    if(element.fileName != 'null'){
+      if(modifyElements[0].contains(element.id) || modifyElements[1].contains(element.id)){
+        Fluttertoast.showToast(
+                    msg: 'new ele',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.black87,
+                    textColor: Colors.white); 
+        final taskId =  FlutterDownloader.enqueue(
+        url: "http://enovsky.com/campusvirtuel/public/logos/"+element.fileName,
+        savedDir: 'assets/',
+        showNotification: false, // show download progress in status bar (for Android)
+        openFileFromNotification: false, // click on notification to open downloaded file (for Android)
+      );
+      return "assets/"+element.fileName;
+      }else{return "assets/"+element.fileName;}
+    }else{return "assets/default_logo.png";}
+  } */

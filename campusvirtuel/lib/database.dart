@@ -9,6 +9,7 @@ class DatabaseHandler {
         onCreate: (database, version) async {
           await database.execute('''create table student(
                                           id      uuid not null primary key,
+                                          ids varchar,
                                           pseudo 	varchar,
                                           institution varchar,
                                           structure varchar,
@@ -108,8 +109,8 @@ class DatabaseHandler {
                                           foreign key (id_matiere, id_section) references matiere_section (id_matiere, id_section)
                                           on delete cascade on update cascade
                                         )''',);
-          await database.rawInsert('''INSERT INTO student (id, navigation_route, navigation_value) VALUES 
-                                        ('00000000-0000-0000-0000-000000000000','/','')''');
+          await database.rawInsert('''INSERT INTO student (id, ids, navigation_route, navigation_value) VALUES 
+                                        ('00000000-0000-0000-0000-000000000000','0000','/','')''');
         },
         version: 1,
       );
